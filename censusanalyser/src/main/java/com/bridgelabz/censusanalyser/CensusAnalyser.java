@@ -14,24 +14,26 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 public class CensusAnalyser {
 
-	public static int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
-		try {
-			Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
-			CsvToBeanBuilder<IndiaCensusCsv> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
-			csvToBeanBuilder.withType(IndiaCensusCsv.class);
-			csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true);
-			CsvToBean<IndiaCensusCsv> csvToBean = csvToBeanBuilder.build();
-			Iterator<IndiaCensusCsv> censusCsvIterator = csvToBean.iterator();
-			Iterable<IndiaCensusCsv> csvIterable = () -> censusCsvIterator;
-			int numOfEntries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
-			return numOfEntries;
-		} catch (IOException e) {
-			throw new CensusAnalyserException(e.getMessage(),
-					CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
-		} catch (IllegalStateException e) {
-			throw new CensusAnalyserException(e.getMessage(),
-					CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+	public static int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException{
+	try {
+		Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
+		CsvToBeanBuilder<IndiaCensusCsv> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
+		csvToBeanBuilder.withType(IndiaCensusCsv.class);
+		csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true);
+		CsvToBean<IndiaCensusCsv> csvToBean = csvToBeanBuilder.build();
+		Iterator<IndiaCensusCsv> censusCsvIterator = csvToBean.iterator();
+		Iterable<IndiaCensusCsv> csvIterable = () -> censusCsvIterator;
+		int numOfEntries = (int) StreamSupport.stream(csvIterable.spliterator(),false).count();
+		return numOfEntries;
+	}
+	catch(IOException e) {
+		throw new CensusAnalyserException(e.getMessage(),
+				                         CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
 		}
-
+	catch(IllegalStateException e) {
+		throw new CensusAnalyserException(e.getMessage(),
+				                         CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+		}
+	
 	}
 }
